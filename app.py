@@ -1,12 +1,36 @@
+from ast import keyword
+import imp
 from flask import Flask, request, render_template
 import face
 import func
+import nvapi
+
 
 app = Flask(__name__)
 
 @app.route('/')
 def hello():
     return render_template('hello.html')
+
+@app.route('/naver')
+def naver():
+    return render_template('naver.html')
+
+@app.route('/newsapi', methods=['GET', 'POST'])
+def newsapi():
+    if request.method == 'GET':
+        return "GET으로 전달"
+    else:
+        # 뉴스 검색어 받기
+        keyword = request.form["keyword"]
+        # 네이버 뉴스 정보 받아오는 코드 실행
+        news = nvapi.nv(keyword)
+        return f'''
+                유저가 검색한 내용 <b>{keyword}</b>의
+                뉴스 정보가 나와야 된다. <br>
+                {news}
+                '''
+                
 
 @app.route('/img')
 def a():
